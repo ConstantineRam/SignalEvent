@@ -30,11 +30,11 @@ public class EventTests
 
             try
             {
-                Parallel.For(0, 10, ( i ) => { ev.Fire(1); });
+                Parallel.For(0, 500, ( i ) => { ev.Fire(1); });
             }
             finally
             {
-                Assert.IsTrue(testResult == 10);
+                Assert.IsTrue(testResult == 500);
             }
         }
 
@@ -42,7 +42,7 @@ public class EventTests
 
     [Test]
     [Description("Race condition test.")]
-    public void EventTests_NoParCals_ShouldFail ( )
+    public void EventTests_NoParCals_MayFail ( )
     {
 
         for (int attempt = 0; attempt < 5; attempt++)
@@ -50,11 +50,11 @@ public class EventTests
             int testResult = 0;
             try
             {
-                Parallel.For(0, 10, ( i, value ) => { testResult++; });
+                Parallel.For(0, 500, ( i, value ) => { testResult++; });
             }
             finally
             {
-                Assert.IsTrue(testResult == 10);
+                Assert.IsTrue(testResult == 500);
             }
         }
 
