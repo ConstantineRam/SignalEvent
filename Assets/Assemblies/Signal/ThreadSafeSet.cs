@@ -1,29 +1,50 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-public sealed class ThreadSafeSet<T>
+//NOTE: Its thread safe, not concurent.
+internal sealed class ThreadSafeSet<T>
 {
     private readonly ReaderWriterLockSlim setLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
     private readonly HashSet<T> collection = new HashSet<T>();
-    public void Add (in T value )
+
+    ~ThreadSafeSet ( )
     {
-        setLock.EnterWriteLock();
+        this.setLock?.Dispose();
+    }
+
+    internal void Add ( in T value )
+    {
+        this.setLock.EnterWriteLock();
         try
         {
             this.collection.Add(value);
         }
         finally
         {
-            if (setLock.IsWriteLockHeld)
-                setLock.ExitWriteLock();
+            if (this.setLock.IsWriteLockHeld)
+                this.setLock.ExitWriteLock();
         }
-        
-
     }
 
-    public bool Contains ( in T value )
+    public void ForEach ( in Action<T> action )
+    {
+        {
+            this.setLock.EnterWriteLock();
+            try
+            {
+                foreach (T t in collection)
+                    action(t);
+            }
+            finally
+            {
+                if (this.setLock.IsWriteLockHeld)
+                    this.setLock.ExitWriteLock();
+            }
+        }
+    }
+
+    internal bool Contains ( in T value )
     {
         setLock.EnterReadLock();
         try
@@ -32,24 +53,38 @@ public sealed class ThreadSafeSet<T>
         }
         finally
         {
-            if (setLock.IsReadLockHeld)
-                setLock.ExitReadLock();
+            if (this.setLock.IsReadLockHeld)
+                this.setLock.ExitReadLock();
         }
-        
-    }
-    
 
-    public void RemoveWhere ( in Predicate<T> match )
+    }
+
+
+    internal void RemoveWhere ( in Predicate<T> match )
     {
-        setLock.EnterWriteLock();
+        this.setLock.EnterWriteLock();
         try
         {
-            collection.RemoveWhere(match);
+            this.collection.RemoveWhere(match);
         }
         finally
         {
-            if (setLock.IsWriteLockHeld)
-                setLock.ExitWriteLock();
+            if (this.setLock.IsWriteLockHeld)
+                this.setLock.ExitWriteLock();
+        }
+    }
+
+    internal void Clear ( )
+    {
+        this.setLock.EnterWriteLock();
+        try
+        {
+            this.collection.Clear();
+        }
+        finally
+        {
+            if (this.setLock.IsWriteLockHeld)
+                this.setLock.ExitWriteLock();
         }
     }
 }

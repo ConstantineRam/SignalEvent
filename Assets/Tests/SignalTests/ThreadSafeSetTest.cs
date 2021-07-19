@@ -1,19 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 using System.Threading.Tasks;
 
 public class ThreadSafeSetTest
 {
     [Test]
-    public void ThreadSafe_ImlementsFunctionality_Contains()
+    public void ThreadSafe_ImlementsFunctionality_Contains ( )
     {
         ThreadSafeSet<int> safeSet = new ThreadSafeSet<int>();
         safeSet.Add(999);
 
-        Assert.IsTrue (safeSet.Contains(999) );
+        Assert.IsTrue(safeSet.Contains(999));
 
     }
 
@@ -21,7 +17,7 @@ public class ThreadSafeSetTest
     public void ThreadSafe_ReturnsFalseIfNotContains ( )
     {
         ThreadSafeSet<int> safeSet = new ThreadSafeSet<int>();
-        
+
         Assert.IsFalse(safeSet.Contains(888));
 
     }
@@ -34,9 +30,23 @@ public class ThreadSafeSetTest
         safeSet.Add(2);
         safeSet.Add(3);
 
-        safeSet.RemoveWhere( elem => elem.Equals (2));
+        safeSet.RemoveWhere(elem => elem.Equals(2));
 
         Assert.IsFalse(safeSet.Contains(2));
+    }
+
+    [Test]
+    public void ThreadSafe_ClearsSelf ( )
+    {
+        ThreadSafeSet<int> safeSet = new ThreadSafeSet<int>();
+        safeSet.Add(111);
+        safeSet.Add(222);
+        safeSet.Add(4444);
+        safeSet.Add(0);
+
+        safeSet.Clear();
+
+        Assert.IsFalse(safeSet.Contains(111) || safeSet.Contains(222) || safeSet.Contains(4444) || safeSet.Contains(0));
     }
 
     [Test]
