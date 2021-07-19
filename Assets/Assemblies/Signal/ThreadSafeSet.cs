@@ -5,7 +5,7 @@ using System.Threading;
 //NOTE: Its thread safe, not concurent.
 internal sealed class ThreadSafeSet<T>
 {
-    private readonly ReaderWriterLockSlim setLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    private readonly ReaderWriterLockSlim setLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
     private readonly HashSet<T> collection = new HashSet<T>();
 
     ~ThreadSafeSet ( )
