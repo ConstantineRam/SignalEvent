@@ -27,7 +27,7 @@ internal sealed class ThreadSafeSet<T>
         }
     }
 
-    public void ForEach ( in Action<T> action )
+    internal void ForEach ( in Action<T> action )
     {
         {
             this.setLock.EnterWriteLock();
