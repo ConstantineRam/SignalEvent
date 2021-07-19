@@ -54,7 +54,7 @@ public class EventTests
             }
             finally
             {
-                Assert.IsTrue(testResult == 500);
+                Assert.IsFalse(testResult == 500);
             }
         }
 
