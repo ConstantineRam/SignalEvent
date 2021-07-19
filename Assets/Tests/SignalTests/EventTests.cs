@@ -5,12 +5,12 @@ public class EventTests
 {
 
     [Test]
-    public void EventTests_EventFires()
+    public void EventTests_EventFires ( )
     {
         int testresult = 0;
         Event<int> ev = new Event<int>();
 
-        ev.Listen((i) => { testresult = i; });
+        ev.Listen(( i ) => { testresult = i; });
         ev.Fire(999);
 
         Assert.IsTrue(testresult == 999);
@@ -21,13 +21,13 @@ public class EventTests
     [Description("Race condition test.")]
     public void EventTests_Parcalls ( )
     {
-        
+
         for (int attempt = 0; attempt < 5; attempt++)
         {
             int testResult = 0;
             Event<int> ev = new Event<int>();
-            ev.Listen(( i ) => { testResult += i; }); 
-            
+            ev.Listen(( i ) => { testResult += i; });
+
             try
             {
                 Parallel.For(0, 10, ( i ) => { ev.Fire(1); });
@@ -40,4 +40,23 @@ public class EventTests
 
     }
 
+    [Test]
+    [Description("Race condition test.")]
+    public void EventTests_NoParCals_ShouldFail ( )
+    {
+
+        for (int attempt = 0; attempt < 5; attempt++)
+        {
+            int testResult = 0;
+            try
+            {
+                Parallel.For(0, 10, ( i, value ) => { testResult++; });
+            }
+            finally
+            {
+                Assert.IsTrue(testResult == 10);
+            }
+        }
+
+    }
 }
