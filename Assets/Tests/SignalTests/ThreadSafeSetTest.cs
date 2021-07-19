@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 public class ThreadSafeSetTest
 {
     [Test]
-    public void ThreadSafe_ImlementsFunctionality_Contains ( )
+    public void ThreadSafe_ImplementsFunctionality_Contains ( )
     {
         ThreadSafeSet<int> safeSet = new ThreadSafeSet<int>();
         safeSet.Add(999);
